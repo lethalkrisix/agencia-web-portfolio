@@ -60,9 +60,7 @@ function NetworkCore() {
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            array={linePositions}
-            itemSize={3}
-            count={linePositions.length / 3}
+            args={[linePositions, 3]}
           />
         </bufferGeometry>
         <lineBasicMaterial color="#f5a623" transparent opacity={0.22} />
@@ -71,9 +69,7 @@ function NetworkCore() {
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            array={nodePositions}
-            itemSize={3}
-            count={nodePositions.length / 3}
+            args={[nodePositions, 3]}
           />
         </bufferGeometry>
         <pointsMaterial color="#f5c463" size={0.05} sizeAttenuation transparent opacity={0.95} />
