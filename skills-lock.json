@@ -38,6 +38,12 @@
       "skillPath": ".claude/skills/playwright-dev/SKILL.md",
       "computedHash": "2e0b3c8d86f09fe0451c18ebf4b7e47fb34535b1c10c53c89ede57afdf4adb03"
     },
+    "postgres-patterns": {
+      "source": "affaan-m/ecc",
+      "sourceType": "github",
+      "skillPath": "skills/postgres-patterns/SKILL.md",
+      "computedHash": "5ec6a4f0504f15fe9464ccaed3ab51afcb52345b9456f36b65afc4e5af1fc6aa"
+    },
     "senior-frontend": {
       "source": "composio-community/awesome-claude-plugins",
       "sourceType": "github",
