@@ -42,6 +42,15 @@ const plan = await agent(
   { schema: PLAN_SCHEMA, model: 'claude-opus-5', phase: 'Intake y Plan' }
 )
 
+if (!plan) {
+  return {
+    status: 'bloqueado',
+    plan: null,
+    veredicto: null,
+    mensaje: 'El agente de planificación no devolvió resultado (posible fallo de la API tras reintentos). No se ha hecho commit.',
+  }
+}
+
 function ejecutarTrabajador(w, motivo) {
   const agentType = w.rol === 'backend' ? 'backend-architect:backend-architect' : 'frontend-developer:frontend-developer'
   const prompt = motivo
@@ -50,10 +59,26 @@ function ejecutarTrabajador(w, motivo) {
   return agent(prompt, { agentType, model: 'claude-sonnet-5', phase: 'Desarrollo', label: w.rol })
 }
 
-phase('Desarrollo')
-if (plan.trabajadores.length) {
-  await parallel(plan.trabajadores.map((w) => () => ejecutarTrabajador(w)))
+async function despacharTrabajadores(motivo) {
+  if (!plan.trabajadores.length) return
+  const resultados = await parallel(plan.trabajadores.map((w) => () => ejecutarTrabajador(w, motivo)))
+  const nulos = resultados.filter((r) => r === null).length
+  if (nulos) {
+    log(`${nulos} de ${plan.trabajadores.length} trabajador(es) no devolvieron resultado (posible fallo de la API) - QA debería detectar el trabajo incompleto`)
+  }
 }
+
+async function ejecutarQA(alcance) {
+  try {
+    return await workflow('qa-codigo-limpio', { alcance })
+  } catch (err) {
+    log(`qa-codigo-limpio falló al ejecutarse: ${err.message}`)
+    return null
+  }
+}
+
+phase('Desarrollo')
+await despacharTrabajadores()
 
 const archivosTocados = plan.trabajadores.flatMap((w) => w.archivos)
 const alcanceQA = archivosTocados.length
@@ -61,17 +86,15 @@ const alcanceQA = archivosTocados.length
   : `todo el working tree - QA debe prestar atención especial a: ${plan.queDebeRevisarQA}`
 
 phase('QA')
-let veredicto = await workflow('qa-codigo-limpio', { alcance: alcanceQA })
+let veredicto = await ejecutarQA(alcanceQA)
 
 let rondas = 0
 while (veredicto && veredicto.status === 'fail' && rondas < 2) {
   rondas += 1
   log(`QA rechazó (ronda ${rondas}/2) - reenviando a los trabajadores con las incidencias concretas`)
   const incidencias = JSON.stringify(veredicto.issues)
-  if (plan.trabajadores.length) {
-    await parallel(plan.trabajadores.map((w) => () => ejecutarTrabajador(w, incidencias)))
-  }
-  veredicto = await workflow('qa-codigo-limpio', { alcance: alcanceQA })
+  await despacharTrabajadores(incidencias)
+  veredicto = await ejecutarQA(alcanceQA)
 }
 
 phase('Entrega')
