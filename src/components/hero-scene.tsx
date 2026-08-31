@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, type RootState } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -87,15 +87,37 @@ function InterferenceField() {
 }
 
 export default function HeroScene() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  // Starts visible: the Hero is the first thing on screen, so the field
+  // should animate immediately, before the observer has reported anything.
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
+      threshold: 0,
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <Canvas
-      camera={{ position: [0, 1.9, 4.6], fov: 45 }}
-      dpr={[1, 1.5]}
-      gl={{ antialias: true, alpha: true }}
-    >
-      <fog attach="fog" args={["#0a0a0f", 3, 6.8]} />
-      <ambientLight intensity={0.5} />
-      <InterferenceField />
-    </Canvas>
+    <div ref={containerRef} className="h-full w-full">
+      <Canvas
+        camera={{ position: [0, 1.9, 4.6], fov: 45 }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: true, alpha: true }}
+        // Stop driving the interference field's rAF loop while the Hero is
+        // scrolled out of view — a GPU/battery guard for an invisible
+        // section, never a motion-preference toggle: the field always
+        // renders and animates in full whenever it is on screen.
+        frameloop={isVisible ? "always" : "never"}
+      >
+        <fog attach="fog" args={["#0a0a0f", 3, 6.8]} />
+        <ambientLight intensity={0.5} />
+        <InterferenceField />
+      </Canvas>
+    </div>
   );
 }

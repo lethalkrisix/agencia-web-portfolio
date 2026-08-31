@@ -25,12 +25,27 @@ export default function Cursor() {
       outerRef.current?.classList.toggle("cursor-link-hover", hovering);
       innerRef.current?.classList.toggle("cursor-link-hover", hovering);
     };
+    const handleLeave = (event: PointerEvent) => {
+      // Only hide when the pointer actually leaves the document (relatedTarget
+      // null / outside the page), not when it moves between elements inside it.
+      if (event.relatedTarget !== null) return;
+      outerRef.current?.style.setProperty("opacity", "0");
+      innerRef.current?.style.setProperty("opacity", "0");
+    };
+    const handleEnter = () => {
+      outerRef.current?.style.removeProperty("opacity");
+      innerRef.current?.style.removeProperty("opacity");
+    };
 
     window.addEventListener("pointermove", handleMove);
     window.addEventListener("pointerover", handleOver);
+    document.addEventListener("pointerleave", handleLeave);
+    document.addEventListener("pointerenter", handleEnter);
     return () => {
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("pointerover", handleOver);
+      document.removeEventListener("pointerleave", handleLeave);
+      document.removeEventListener("pointerenter", handleEnter);
       document.documentElement.classList.remove("custom-cursor");
     };
   }, [enabled]);

@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
 :root {
   --background: #0a0a0f;
   --background-elevated: #121218;
@@ -37,6 +42,15 @@ body {
   html.custom-cursor * {
     cursor: none !important;
   }
+
+  /* The custom cursor ring keeps tracking over text fields (it never
+     disappears), but native `cursor: none` also erases the I-beam that
+     normally signals "this accepts text input". Restore that signal here
+     without touching the custom-cursor behavior itself. */
+  html.custom-cursor input,
+  html.custom-cursor textarea {
+    cursor: text !important;
+  }
 }
 
 .circle-cursor {
@@ -55,6 +69,10 @@ body {
   border: 1px solid var(--color-accent);
   background: transparent;
   opacity: 0.5;
+  /* Intentional: this is what gives the outer ring its elegant trailing lag
+     behind the pointer (the inner dot has no transition and tracks
+     instantly). Reviewed against the pointermove handler in cursor.tsx —
+     80ms reads as a deliberate follow, not sluggishness. Keep it. */
   transition: transform 0.08s ease-out;
 }
 

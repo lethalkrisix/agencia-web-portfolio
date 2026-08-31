@@ -39,11 +39,11 @@ const wordItem = {
 export default function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
-      <div className="absolute inset-0 -z-10 opacity-80 sm:right-[-10%] sm:left-[28%]">
+      <div className="absolute inset-0 -z-10 opacity-50 sm:right-[-10%] sm:left-[28%] sm:opacity-80">
         <HeroScene />
       </div>
 
-      <div className="from-background via-background/70 pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r to-transparent" />
+      <div className="from-background via-background/95 to-background/85 sm:via-background/70 pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r sm:to-transparent" />
 
       <motion.div
         variants={container}
@@ -86,15 +86,21 @@ export default function Hero() {
         <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
           <MagneticButton
             href="#contacto"
-            className="bg-accent inline-block rounded-full px-7 py-3.5 text-sm font-semibold text-[#0a0a0f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="bg-accent focus-visible:outline-accent inline-block rounded-full px-7 py-3.5 text-sm font-semibold text-[#0a0a0f] focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             Pide un diagnóstico gratuito
           </MagneticButton>
           <a
             href="#servicios"
-            className="text-foreground-muted hover:text-foreground rounded text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="group text-foreground-muted hover:text-foreground focus-visible:outline-accent inline-flex items-center gap-2 rounded text-sm font-medium tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
           >
-            Ver servicios ↓
+            Ver servicios
+            <span
+              aria-hidden="true"
+              className="inline-block transition-transform duration-300 group-hover:translate-y-0.5"
+            >
+              ↓
+            </span>
           </a>
         </motion.div>
       </motion.div>
