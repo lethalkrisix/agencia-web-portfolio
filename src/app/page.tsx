@@ -1,16 +1,25 @@
 import Nav from "@/components/nav";
 import Hero from "@/components/hero";
+import Marquee from "@/components/marquee";
+import Stats from "@/components/stats";
+import Services from "@/components/services";
+import Process from "@/components/process";
+import Contact from "@/components/contact";
+import Footer from "@/components/footer";
 
 export default function Home() {
   return (
     <>
       <Nav />
-      <main>
+      <main id="main-content">
         <Hero />
-        <section id="servicios" className="min-h-[40svh]" />
-        <section id="proceso" className="min-h-[40svh]" />
-        <section id="contacto" className="min-h-[40svh]" />
+        <Marquee />
+        <Stats />
+        <Services />
+        <Process />
+        <Contact />
       </main>
+      <Footer />
     </>
   );
 }

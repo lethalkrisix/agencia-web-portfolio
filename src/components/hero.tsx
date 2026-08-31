@@ -2,8 +2,17 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import MagneticButton from "./magnetic-button";
 
 const HeroScene = dynamic(() => import("./hero-scene"), { ssr: false });
+
+const HEADLINE_WORDS = [
+  { text: "Tu" },
+  { text: "web," },
+  { text: "siempre" },
+  { text: "al", accent: true },
+  { text: "día.", accent: true },
+];
 
 const container = {
   hidden: {},
@@ -17,14 +26,24 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
+const headlineContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
+};
+
+const wordItem = {
+  hidden: { y: "110%" },
+  show: { y: "0%", transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
 export default function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
-      <div className="absolute inset-0 -z-10 opacity-80 sm:right-[-10%] sm:left-[28%]">
+      <div className="absolute inset-0 -z-10 opacity-50 sm:right-[-10%] sm:left-[28%] sm:opacity-80">
         <HeroScene />
       </div>
 
-      <div className="from-background via-background/70 pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r to-transparent" />
+      <div className="from-background via-background/95 to-background/85 sm:via-background/70 pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r sm:to-transparent" />
 
       <motion.div
         variants={container}
@@ -40,10 +59,19 @@ export default function Hero() {
         </motion.p>
 
         <motion.h1
-          variants={item}
-          className="font-display max-w-2xl text-5xl leading-[1.05] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl"
+          variants={headlineContainer}
+          className="font-display max-w-2xl text-5xl leading-[1.05] font-semibold tracking-tight sm:text-6xl lg:text-7xl"
         >
-          Tu web, siempre <span className="text-accent">al día</span>.
+          {HEADLINE_WORDS.map((word, i) => (
+            <span key={i} className="mr-3 inline-block overflow-hidden pb-1 align-bottom">
+              <motion.span
+                variants={wordItem}
+                className={`inline-block ${word.accent ? "text-accent" : ""}`}
+              >
+                {word.text}
+              </motion.span>
+            </span>
+          ))}
         </motion.h1>
 
         <motion.p
@@ -56,17 +84,23 @@ export default function Hero() {
         </motion.p>
 
         <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
-          <a
+          <MagneticButton
             href="#contacto"
-            className="bg-accent rounded-full px-7 py-3.5 text-sm font-semibold text-[#0a0a0f] transition-transform hover:scale-[1.03]"
+            className="bg-accent focus-visible:outline-accent inline-block rounded-full px-7 py-3.5 text-sm font-semibold text-[#0a0a0f] focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             Pide un diagnóstico gratuito
-          </a>
+          </MagneticButton>
           <a
             href="#servicios"
-            className="text-foreground-muted hover:text-foreground text-sm font-medium transition-colors"
+            className="group text-foreground-muted hover:text-foreground focus-visible:outline-accent inline-flex items-center gap-2 rounded text-sm font-medium tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
           >
-            Ver servicios ↓
+            Ver servicios
+            <span
+              aria-hidden="true"
+              className="inline-block transition-transform duration-300 group-hover:translate-y-0.5"
+            >
+              ↓
+            </span>
           </a>
         </motion.div>
       </motion.div>

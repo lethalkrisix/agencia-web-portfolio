@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 dev-server.log
+
+# git worktrees (subagent-driven-development scratch)
+/.worktrees/
