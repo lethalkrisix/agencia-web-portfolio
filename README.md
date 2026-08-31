@@ -1,3 +1,15 @@
+## ⚠️ Workflow de la agencia (IMPORTANTE)
+
+Este repo es el sitio Anclora, construido y mantenido a través del departamento **Desarrollo Web/3D** de la agencia. Diseño completo: `docs/superpowers/specs/2026-08-31-desarrollo-web-qa-workflow-design.md`.
+
+- **Lanzar un encargo de desarrollo**: `/desarrollo-web "descripción del encargo"` — planifica, reparte a frontend/backend, verifica con QA, deja un commit local + informe en el vault. **Nunca hace `git push` por su cuenta** — el push a `main` (auto-despliega en Vercel) lo confirmas tú aparte.
+- **Lanzar solo QA**: `/qa-codigo-limpio`.
+- Si falla tras 2 rondas de reintento, para sin commitear y da un informe de bloqueo, no decide solo.
+
+Estado (2026-08-31): diseño aprobado, comandos/scripts pendientes de implementar — comprobar que existen en `.claude/workflows/` y `.claude/commands/` antes de asumir que ya funcionan.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
