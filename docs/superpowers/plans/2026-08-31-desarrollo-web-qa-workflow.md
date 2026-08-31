@@ -243,7 +243,7 @@ const plan = await agent(
 )
 
 function ejecutarTrabajador(w, motivo) {
-  const agentType = w.rol === 'backend' ? 'backend-architect' : 'frontend-developer'
+  const agentType = w.rol === 'backend' ? 'backend-architect:backend-architect' : 'frontend-developer:frontend-developer'
   const prompt = motivo
     ? `Eres el trabajador ${w.rol} del departamento Desarrollo Web/3D. QA rechazó tu trabajo anterior. Incidencias concretas: ${motivo}. Tu encargo original: ${w.encargo} sobre los archivos: ${w.archivos.join(', ')}. Corrige SOLO lo que las incidencias señalan que afecte a tus archivos asignados, sin tocar nada más de lo necesario.`
     : `Eres el trabajador ${w.rol} del departamento Desarrollo Web/3D. Tu encargo: ${w.encargo}. Archivos a tocar: ${w.archivos.join(', ')}. Criterio de aceptación: ${w.criterioAceptacion}. Si encuentras una duda de diseño/criterio o un error que no sabes resolver, NO decidas en silencio ni sigas adivinando - repórtalo claramente en tu respuesta final para que el orquestador lo resuelva. Cuando termines, describe brevemente qué cambiaste y por qué.`
